@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkMe | Link Locked</title>
+    <style>
+        body { background: #0b0f19; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .card { background: #161b22; padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 90%; max-width: 400px; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .btn-sub { background: #ff0000; color: white; }
+        .btn-dl { background: #3b82f6; color: white; display: none; }
+        h2 { margin-top: 0; }
+        p { color: #8b949e; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Link Locked! 🔒</h2>
+        <p>Please subscribe to our channel to unlock your file.</p>
+        
+        <a href="#" id="subLink" target="_blank" class="btn btn-sub" onclick="unlock()">1. SUBSCRIBE & HIT BELL</a>
+        <a href="#" id="dlLink" class="btn btn-dl">2. DOWNLOAD FILE</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCiy6r3gGB7MU7JV1Xzcq8KTk8HhAMTMgA",
+            authDomain: "linkme-291b4.firebaseapp.com",
+            databaseURL: "https://linkme-291b4-default-rtdb.firebaseio.com",
+            projectId: "linkme-291b4",
+            storageBucket: "linkme-291b4.firebasestorage.app",
+            appId: "1:422600159860:web:e4d01564a53ba96e69d721"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Kunin ang ID mula sa URL (?id=abcde)
+        const urlParams = new URLSearchParams(window.location.search);
+        const linkId = urlParams.get('id');
+
+        if (linkId) {
+            database.ref('links/' + linkId).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('subLink').href = data.social;
+                    document.getElementById('dlLink').href = data.destination;
+                } else {
+                    alert("Link not found!");
+                }
+            });
+        }
+
+        function unlock() {
+            // Pagka-click ng subscribe, lalabas ang download button after 5 seconds
+            setTimeout(() => {
+                document.getElementById('dlLink').style.display = 'block';
+                document.getElementById('subLink').innerText = "✅ SUBSCRIBED";
+            }, 5000); 
+        }
+    </script>
+</body>
+</html>
